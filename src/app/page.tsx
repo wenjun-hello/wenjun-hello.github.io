@@ -103,10 +103,13 @@ function FloatingCard() {
         }}
       >
         <img
-          src="/cards/card-back.png"
-          alt="Royal Arcana"
+          src="/cards-webp/card-back.webp"
+          alt="塔罗牌背面"
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-contain"
           style={{ background: "#0D1424" }}
+          onError={(e) => { e.currentTarget.src = "/cards/card-back.png"; }}
         />
         {/* Inner border */}
         <div className="absolute inset-[7px] pointer-events-none" style={{ border: "1px solid rgba(200,169,107,0.14)" }} />

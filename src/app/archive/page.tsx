@@ -213,7 +213,7 @@ export default function ArchivePage() {
                   border: "1px solid rgba(200,169,107,0.1)",
                 }}
               >
-                <TarotCard card={card} flipped width={120} height={192} />
+                <TarotCard card={card} flipped useThumbnail width={120} height={192} />
                 <div className="text-center">
                   <h3
                     className="text-xs tracking-[0.1em]"

@@ -269,7 +269,7 @@ function ShuffleDeck({ onComplete }: { onComplete: () => void }) {
                 delay: i * 0.06,
               }}
             >
-              <img src="/cards/card-back.png" alt="" className="w-full h-full object-cover" />
+              <img src="/cards-webp/card-back.webp" onError={(e) => { e.currentTarget.src = "/cards/card-back.png"; }} alt="" className="w-full h-full object-cover" />
             </motion.div>
           ))}
           <motion.p

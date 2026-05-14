@@ -39,12 +39,15 @@ function CardBack({ width = 200, height = 320 }: { width?: number; height?: numb
           />
         )
       )}
-      {/* Image */}
+      {/* Image — WebP first, PNG fallback */}
       <img
-        src="/cards/card-back.png"
-        alt="Royal Arcana card back"
+        src="/cards-webp/card-back.webp"
+        alt="塔罗牌背面"
+        loading="eager"
+        decoding="async"
         className="w-full h-full object-contain"
         style={{ background: "#0D1424" }}
+        onError={(e) => { e.currentTarget.src = "/cards/card-back.png"; }}
       />
     </div>
   );
@@ -53,7 +56,10 @@ function CardBack({ width = 200, height = 320 }: { width?: number; height?: numb
 /* ==============================
    CARD FACE (image)
    ============================== */
-function CardFace({ card }: { card: TarotCardType }) {
+function CardFace({ card, useThumbnail = false }: { card: TarotCardType; useThumbnail?: boolean }) {
+  const imgSrc = useThumbnail
+    ? (card.thumbnail || card.webpImage || card.image)
+    : (card.webpImage || card.image);
   return (
     <div
       className="relative overflow-hidden flex flex-col"
@@ -65,12 +71,15 @@ function CardFace({ card }: { card: TarotCardType }) {
         boxShadow: "inset 0 0 0 1px rgba(200,169,107,0.08)",
       }}
     >
-      {/* Image area */}
+      {/* Image area — WebP first, PNG fallback */}
       <div className="flex-1 relative overflow-hidden">
         <img
-          src={card.image}
-          alt={card.name}
+          src={imgSrc}
+          alt={card.chineseName || card.name}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain"
+          onError={(e) => { e.currentTarget.src = card.image; }}
         />
       </div>
 
@@ -119,6 +128,7 @@ export default function TarotCard({
   height = 320,
   onClick,
   className = "",
+  useThumbnail = false,
 }: {
   card?: TarotCardType;
   flipped: boolean;
@@ -126,6 +136,7 @@ export default function TarotCard({
   height?: number;
   onClick?: () => void;
   className?: string;
+  useThumbnail?: boolean;
 }) {
   return (
     <div
@@ -160,7 +171,7 @@ export default function TarotCard({
           }}
         >
           {card ? (
-            <CardFace card={card} />
+            <CardFace card={card} useThumbnail={useThumbnail} />
           ) : (
             <div
               className="flex items-center justify-center"

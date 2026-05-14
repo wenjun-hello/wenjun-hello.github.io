@@ -5,6 +5,8 @@ export type TarotCard = {
   chineseName: string;
   frenchName: string;
   image: string;
+  webpImage: string;
+  thumbnail: string;
   keywords: string[];
   coreMeaning: string;
   upright: string;
@@ -23,6 +25,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 0, roman: "0", name: "The Fool", chineseName: "愚人", frenchName: "Le Mat",
     image: "/cards/00-fool.png",
+    webpImage: "/cards-webp/00-fool.webp",
+    thumbnail: "/cards-thumb/00-fool.webp",
     keywords: ["开始", "天真", "信任", "自由", "未知"],
     coreMeaning: "愚人是塔罗的第一张牌，也代表一切尚未成形的起点。这张牌里没有沉重的经验，也没有确定的路线——只有一个站在悬崖边、愿意往前迈一步的人。它提醒我们，有时最重要的并不是知道所有答案，而是愿意带着未知往前走。",
     upright: "愚人出现时，往往意味着你正处于一个新阶段的入口。或许你对接下来要做什么还没有十足把握，这完全正常。这张牌并不是说你什么都不用想，而是说：不必等到一切准备好才开始。它邀请你带着好奇和一点勇气往前走，同时相信自己在路上会慢慢看清方向。有时候，人们太习惯在脑子里反复推演所有可能性，却忘了行动本身也能带来清晰的判断。",
@@ -39,6 +43,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 1, roman: "I", name: "The Magician", chineseName: "魔术师", frenchName: "Le Bateleur",
     image: "/cards/01-magician.png",
+    webpImage: "/cards-webp/01-magician.webp",
+    thumbnail: "/cards-thumb/01-magician.webp",
     keywords: ["意志", "专注", "资源", "行动", "创造"],
     coreMeaning: "魔术师代表着将想法变为现实的能力。桌上已经放好了工具——经验、技能、直觉和行动力——它们一直都在。这张牌的核心并不神奇，而是一个很朴素的提醒：你已经拥有了一些可以用来创造改变的东西，只是需要更专注地把它们放在对的地方。",
     upright: "当魔术师出现时，它提醒你停下来，看看自己已经有了什么，而不是一直盯着缺少的部分。你可能拥有比想象中更多的资源、人脉、能力和时间。现在需要的是把你的注意力聚拢起来，一次只做一件事，并且真正把它做完。这张牌也鼓励你更直接地表达自己——有话好好说，有想法就写下来，有行动就去做。",
@@ -55,6 +61,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 2, roman: "II", name: "The High Priestess", chineseName: "女祭司", frenchName: "La Papesse",
     image: "/cards/02-high-priestess.png",
+    webpImage: "/cards-webp/02-high-priestess.webp",
+    thumbnail: "/cards-thumb/02-high-priestess.webp",
     keywords: ["直觉", "内在", "安静", "等待", "觉察"],
     coreMeaning: "女祭司安静地坐在两根柱子之间，手里握着半开的经卷。她代表的是那些还不需要说出来的东西——你深处的感受、还未成形的判断、隐约的不安或期待。这张牌告诉你：有些答案并不需要急于从外部找到，它们会在你安静下来的时候，慢慢浮出水面。",
     upright: "女祭司的出现，往往意味着你现在更需要的不是行动，而是倾听。听你自己的感受，听那些没说出口的犹豫，听身体告诉你的话。你可能习惯了用分析和逻辑来应对一切，但有些事情不是靠想就能想明白的。给自己一点安静的时间，不用马上做决定，也不用向任何人解释。答案会来的——但它的速度由你内心的安静程度决定。",
@@ -71,6 +79,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 3, roman: "III", name: "The Empress", chineseName: "女皇", frenchName: "L'Impératrice",
     image: "/cards/03-empress.png",
+    webpImage: "/cards-webp/03-empress.webp",
+    thumbnail: "/cards-thumb/03-empress.webp",
     keywords: ["丰盛", "滋养", "创造", "感受", "成长"],
     coreMeaning: "女皇坐在金色的麦田和茂密的森林前，她是生命力和创造力的化身。这张牌说的不是要去争取什么，而是去感受已经存在的东西——身体的需要、情绪的流动、关系里的温度。有些东西不靠拼命得来，而是靠好好对待自己之后，自然而然地生长出来。",
     upright: "女皇出现的时候，往往代表你正在一个值得享受的阶段——不是因为一切都完美了，而是因为你愿意对自己好一点。你可能在创造一些东西：一个作品、一段关系、一种生活方式。不用急着做完，享受中间的过程。同时也提醒你：如果累了，就休息。滋养自己不是浪费时间，是所有创造的前置条件。",
@@ -87,6 +97,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 4, roman: "IV", name: "The Emperor", chineseName: "皇帝", frenchName: "L'Empereur",
     image: "/cards/04-emperor.png",
+    webpImage: "/cards-webp/04-emperor.webp",
+    thumbnail: "/cards-thumb/04-emperor.webp",
     keywords: ["秩序", "稳定", "边界", "责任", "自律"],
     coreMeaning: "皇帝坐在石制的王座上，身后是历经风雨却不曾动摇的山脉。这张牌说的不是控制他人，而是掌控自己的节奏。在混乱中建立边界，在不确定中找到可以依靠的结构——有时候，一个人的力量来自于他给自己设下的清晰规则。",
     upright: "皇帝提醒你，在某些事情上需要更认真一点。不是说你要变得严肃无趣，而是在你需要稳定的时候，可以为自己设定边界和计划。比如：固定的作息、明确的工作安排、一句对自己负责的承诺。自律不是为了惩罚自己，而是给你一种可以信任自己的感觉。如果你正在面对一个混乱的局面，这张牌鼓励你成为那个先安静下来、开始整理的人。",
@@ -103,6 +115,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 5, roman: "V", name: "The Hierophant", chineseName: "教皇", frenchName: "Le Pape",
     image: "/cards/05-hierophant.png",
+    webpImage: "/cards-webp/05-hierophant.webp",
+    thumbnail: "/cards-thumb/05-hierophant.webp",
     keywords: ["传统", "学习", "引导", "知识", "理解"],
     coreMeaning: "教皇双手举起给予祝福，脚下是两把交叉的钥匙。这张牌代表的是从他人身上获取智慧和经验的过程。它提醒你：不需要每件事都从头摸索。有时候，听一听走过这条路的人怎么说，会让你少一些迷茫。但这并不代表你要完全照搬别人的方式——最终，路还是要你自己走。",
     upright: "教皇出现时，往往意味着你现在适合学习、请教、寻求指导。也许有一个资深的人可以帮你，也许有一本书已经等了你很久。你不需要证明自己什么都懂——承认自己还有不懂的地方，其实是一种自信。加入一个社区、找一个老师、参加一个课程，这些都不是弱者的行为，而是一个清楚自己需要什么的人做出的选择。",
@@ -119,6 +133,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 6, roman: "VI", name: "The Lovers", chineseName: "恋人", frenchName: "Les Amoureux",
     image: "/cards/06-lovers.png",
+    webpImage: "/cards-webp/06-lovers.webp",
+    thumbnail: "/cards-thumb/06-lovers.webp",
     keywords: ["选择", "关系", "价值观", "真诚", "连接"],
     coreMeaning: "恋人牌并不只是讲爱情。它在说一个更深的问题：当两条路同时出现在面前时，你会怎么选？它提醒我们，重要的选择不能只靠外部判断，还需要听听自己真正在意什么。有时候最简单的标准是：哪个方向让你觉得更像自己？",
     upright: "恋人出现时，往往意味着你正面临一个需要用心去做的决定——可能是关于一个人、一份工作，或者一种生活方式。这个选择不是对与错的问题，而是哪一个更接近你真正想要的。牌面邀请你放下外界的噪音，回到你自己的判断标准上来。如果还在犹豫，也许可以换一个角度问自己：如果我并不害怕走错，我会怎么选？",
@@ -135,6 +151,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 7, roman: "VII", name: "The Chariot", chineseName: "战车", frenchName: "Le Chariot",
     image: "/cards/07-chariot.png",
+    webpImage: "/cards-webp/07-chariot.webp",
+    thumbnail: "/cards-thumb/07-chariot.webp",
     keywords: ["决心", "前进", "掌控", "突破", "专注"],
     coreMeaning: "战车由两只朝不同方向走的斯芬克斯拉着——但它们被战士的意志牵引到同一个方向。这张牌说的就是：当你心里的不同声音不再互相拉扯，外界就没什么能真的拦住你。它代表那种经过内心整理之后，终于可以专注往前走的阶段。",
     upright: "战车告诉你：你已经花了足够的时间犹豫和权衡，现在可以行动了。你不必让脑袋里所有反对的声音都消失才出发——只需要让最重要的那个声音轻一点、近一点，其他声音暂时放到后排座位上。把精力集中在一件你真正在乎的事上，往前推进。推多远是其次，关键是你在主动把握方向。",
@@ -151,6 +169,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 8, roman: "VIII", name: "Strength", chineseName: "力量", frenchName: "La Force",
     image: "/cards/08-strength.png",
+    webpImage: "/cards-webp/08-strength.webp",
+    thumbnail: "/cards-thumb/08-strength.webp",
     keywords: ["勇气", "耐心", "内在力量", "温柔", "韧性"],
     coreMeaning: "一个温柔的女子合上了一头狮子的嘴——不是用蛮力，而是用耐心和安静的专注。力量牌说的从来不是谁的声音更大、谁的态度更强硬。真正的力量常常是无声的：在被激怒的时候选择暂停，在害怕的时候选择面对，在想要放弃的时候再坚持一小步。",
     upright: "力量牌告诉你，你比自己想象中更有韧性。面对眼前的挑战，你不需要变得强势才能应对——你更需要的也许是冷静、坚定和一点对自己的信任。尤其在情绪波动比较大的时候，这张牌希望你保持节奏，不要被别人的反应牵着走。你的平静就是你的回应，也是你最有力的边界。",
@@ -167,6 +187,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 9, roman: "IX", name: "The Hermit", chineseName: "隐士", frenchName: "L'Ermite",
     image: "/cards/09-hermit.png",
+    webpImage: "/cards-webp/09-hermit.webp",
+    thumbnail: "/cards-thumb/09-hermit.webp",
     keywords: ["自省", "独处", "智慧", "寻找", "耐心"],
     coreMeaning: "隐士站在山顶，手中高举一盏灯，照亮脚下的路。这张牌不是要你从此脱离人群，而是要你暂时退后一步，从日常的喧闹中抽离出来，好好听听自己想什么。很多答案并不是因为找不到，而是因为太吵了，听不见。",
     upright: "隐士邀请你进入一段安静的自省期。你不需要向外界证明什么，也不需要急着做出任何重大的决定。把注意力从外部收回来，认真地问自己几个问题：我最近过得好吗？我在乎什么？我累了是因为走错了方向，还是因为一直没好好休息？偶尔的孤独不是问题——它是帮助你更清楚认识自己的空间。",
@@ -183,6 +205,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 10, roman: "X", name: "Wheel of Fortune", chineseName: "命运之轮", frenchName: "La Roue de Fortune",
     image: "/cards/10-wheel-of-fortune.png",
+    webpImage: "/cards-webp/10-wheel-of-fortune.webp",
+    thumbnail: "/cards-thumb/10-wheel-of-fortune.webp",
     keywords: ["转变", "周期", "机会", "变化", "流动"],
     coreMeaning: "命运之轮在不断地转动。它不是在指责你哪里做得不够好，也不是在承诺你会得到某种固定的命运。它只是如实告诉你：变化一直在发生。有时对你有利，有时让你感觉受挫，但任何时候都不是结局。你能做的是在顺境时保持清醒，在逆境时保持希望。",
     upright: "命运之轮的出现，往往意味着事情正在发生转变。你可能正在经历一个相对顺利的阶段——以前堵着的地方突然通了，之前的努力开始被看到。但也请记得，所有状态都是流动的。享受上升期的同时，不用把一切都归因为运气，也不用过度解释。抓住你可以抓住的机会，但不必在不可控的事情上耗费太多精力。",
@@ -199,6 +223,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 11, roman: "XI", name: "Justice", chineseName: "正义", frenchName: "La Justice",
     image: "/cards/11-justice.png",
+    webpImage: "/cards-webp/11-justice.webp",
+    thumbnail: "/cards-thumb/11-justice.webp",
     keywords: ["公平", "真相", "平衡", "责任", "清晰"],
     coreMeaning: "正义女神手持天平和剑，目光不躲不闪。这张牌说的不是惩罚，而是一个简单但不容易的原则：你的每一个选择都有它的后果。你所付出的、你所回避的、你所面对和逃避的——最终都会以某种方式回到你面前。它邀请你以更诚实的态度看待自己的选择。",
     upright: "正义牌提醒你，此刻可能需要你在某件事上做出公正的判断。不是出于情绪，不是出于对谁的偏袒，而是基于事实和内心真正认同的标准。无论你是在被人评价，还是在评价别人，保持坦诚是让自己站稳的唯一方式。如果你之前做过不恰当的选择，现在是修正的机会——不是为了惩罚，而是为了让自己的心更平衡。",
@@ -215,6 +241,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 12, roman: "XII", name: "The Hanged Man", chineseName: "倒吊人", frenchName: "Le Pendu",
     image: "/cards/12-hanged-man.png",
+    webpImage: "/cards-webp/12-hanged-man.webp",
+    thumbnail: "/cards-thumb/12-hanged-man.webp",
     keywords: ["暂停", "放手", "新视角", "等待", "觉察"],
     coreMeaning: "倒吊人倒挂在树上，表情平静，头顶散发着温柔的光。他不是被惩罚，而是选择了一个不同的角度看世界。很多时候我们太着急解决问题，反而让问题变得更紧张。这张牌希望你学会暂停——不是放弃，是换一个更松、更开阔的状态去看待它。",
     upright: "倒吊人建议你暂时放手。不是在说你做错了什么，而是有些事越用力越走不出去。你现在最需要的可能不是更多的行动，而是一个完全不同的思考角度。试试从相反的方向看问题：如果你认为自己失败了，那失败教会了你什么？如果你一直在追某个人或某件事，停下来会怎样？不是逃避，而是给答案一点时间浮出来。",
@@ -231,6 +259,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 13, roman: "XIII", name: "Death", chineseName: "死神", frenchName: "L'Arcane sans Nom",
     image: "/cards/13-death.png",
+    webpImage: "/cards-webp/13-death.webp",
+    thumbnail: "/cards-thumb/13-death.webp",
     keywords: ["结束", "转变", "放手", "重生", "清理"],
     coreMeaning: "死神并不可怕——它只是意味着某个阶段正在结束。一段关系、一份工作、一种习惯、一个你看待自己的旧视角，正在慢慢走完它的周期。它不一定意味着失去，更多时候它代表的是一次深层的内在更新：把旧的、不再适合的放下来，给新的让出空间。",
     upright: "死神提醒你，某些东西已经到了该结束的时候。这可能不是你能决定的——它也许是被动的，也许是你内心深处早就做好了的准备。结束是一段不容易的体验，你也完全可以承认这种不舍、不甘和难过。但这个结束不是为了折磨你，而是为了让那些已经不再适合你现状的东西，不再继续占据你的空间。",
@@ -247,6 +277,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 14, roman: "XIV", name: "Temperance", chineseName: "节制", frenchName: "La Tempérance",
     image: "/cards/14-temperance.png",
+    webpImage: "/cards-webp/14-temperance.webp",
+    thumbnail: "/cards-thumb/14-temperance.webp",
     keywords: ["平衡", "调和", "耐心", "治愈", "流动"],
     coreMeaning: "一位天使将水在两个杯子之间缓缓倒来倒去——不多不少，刚好平衡。节制告诉我们的不是什么大道理，而是一个很日常的智慧：不要走极端。工作太拼就休息，想太多就行动，太懒散就给自己一个小小的推动。平衡不是一次做完的事，而是每天都重新选择的事。",
     upright: "节制出现时，往往表示你需要在某个方面找回节奏。你也许刚刚经历了一段高度紧张或是完全松懈的状态，现在是时候让生活回到中间的水位。不需要非黑即白，也不需要大起大落——用一种更温和、更有节奏的方式，慢慢修复之前的失衡。这张牌也提醒你：任何事情，持续的适度投入比一次性爆发更有效。",
@@ -263,6 +295,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 15, roman: "XV", name: "The Devil", chineseName: "恶魔", frenchName: "Le Diable",
     image: "/cards/15-devil.png",
+    webpImage: "/cards-webp/15-devil.webp",
+    thumbnail: "/cards-thumb/15-devil.webp",
     keywords: ["束缚", "执念", "依赖", "阴影", "解脱"],
     coreMeaning: "恶魔牌上两个人被链子松松地套住——其实他们随时可以挣脱。这张牌说的不是外在的邪恶力量，而是我们自愿陷入的模式：对一个人不合理的依赖、对某种习惯的上瘾、对安全感近乎强迫的追求。它提醒你：你可能被困住了，但钥匙也在你手里。",
     upright: "恶魔邀请你诚实地看一个问题：你最近有没有什么事，是你知道不太对、但就是控制不住自己去做的？可能是一段消耗你的关系、一个不健康的习惯、一种反复出现的自我否定。这张牌不是在批评你，而是希望你在面对这些的时候，不要再用我只是没办法来搪塞自己。看清它，然后哪怕只是开始想一想没有它会怎样，就已经是迈出了一步。",
@@ -279,6 +313,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 16, roman: "XVI", name: "The Tower", chineseName: "高塔", frenchName: "La Maison Dieu",
     image: "/cards/16-tower.png",
+    webpImage: "/cards-webp/16-tower.webp",
+    thumbnail: "/cards-thumb/16-tower.webp",
     keywords: ["颠覆", "真相", "觉醒", "变化", "重建"],
     coreMeaning: "一道闪电劈中高塔，塔顶的皇冠被掀翻，两人从塔中坠落。高塔是一张让人不愿意看到但常常绕不过的牌。它说的是那些被我们一直回避、不敢面对的东西，突然以一种无法忽视的方式炸开了。它不是灾难，更接近于一个阶段性的清醒：有些东西必须被打破，才能有空间长出新的。",
     upright: "高塔带来的变化往往是突然的——也许是关系里一个藏了很久的问题终于被戳破，也许是工作上一件无法再撑的事终于垮了。这种感觉很难受，但它打破的不是你，而是那些你一直在勉强维持的旧结构。事后回想起来，你可能反而会感谢这个瞬间。它让你不用再假装看不见了。",
@@ -295,6 +331,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 17, roman: "XVII", name: "The Star", chineseName: "星星", frenchName: "L'Étoile",
     image: "/cards/17-star.png",
+    webpImage: "/cards-webp/17-star.webp",
+    thumbnail: "/cards-thumb/17-star.webp",
     keywords: ["希望", "疗愈", "平静", "信念", "恢复"],
     coreMeaning: "暴风雨过后，星星在夜空中一盏一盏地亮起来。星星牌是所有艰难时刻之后的第一道光。它不是在说你已经好了，而是说你正在好起来的路上。疗愈从来不是一蹴而就的事——它更像一种慢慢恢复体力的过程，需要时间，也需要你对自己多一点耐心。",
     upright: "星星的出现意味着你已经走过了一段比较艰难的时期。现在可以稍微松一口气了。不需要急着证明什么，也不需要逼自己必须高兴。你可以在平静里待着，让感官恢复知觉，让心态慢慢归位。这张牌也代表着一种安静的希望——不是因为天上掉下来了什么，而是因为你内在开始长出了一些新的相信。",
@@ -311,6 +349,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 18, roman: "XVIII", name: "The Moon", chineseName: "月亮", frenchName: "La Lune",
     image: "/cards/18-moon.png",
+    webpImage: "/cards-webp/18-moon.webp",
+    thumbnail: "/cards-thumb/18-moon.webp",
     keywords: ["不安", "直觉", "潜意识", "迷雾", "观察"],
     coreMeaning: "月光下的田野看起来和白天完全不同——很多东西都变了形状。月亮告诉我们，有些事情现在看不清是正常的。不是因为你不够聪明，而是因为现在你还在雾里。不要在雾里急着做关乎长远的大决定，先观察、等待，给自己多留一些不确定的空间，反而更安全。",
     upright: "月亮出现时，你可能正处在一个不太清晰的状态里。你对自己、对某人、对未来的感觉都像隔了一层纱。这种不确定是有理由的——有些信息还没被看到，有些情绪还没被整理。你不需要马上知道答案，更不需要做出完美的判断。你现在可以做的是：继续观察，保护好自己的情绪，不要因为不安而仓促行动。",
@@ -327,6 +367,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 19, roman: "XIX", name: "The Sun", chineseName: "太阳", frenchName: "Le Soleil",
     image: "/cards/19-sun.png",
+    webpImage: "/cards-webp/19-sun.webp",
+    thumbnail: "/cards-thumb/19-sun.webp",
     keywords: ["喜悦", "成功", "生命力", "明朗", "庆祝"],
     coreMeaning: "太阳照在一个骑白马的孩童身上，身后的向日葵齐刷刷地望向阳光。太阳牌说的是那种纯粹的、不用理由的开心——不是因为事情都解决了，而是因为你感觉自己还活着，还能感受到温暖。它提醒你：快乐不需要等一切妥当之后才有资格享受。",
     upright: "太阳是塔罗里最明亮的一张牌。它带来了清晰、信心和能量。也许你最近想通了一件纠结很久的事，也许某个项目终于有了突破，也许你只是单纯地今天心情很好。不管是哪一种，请允许自己开心，不要用还不够好来稀释它。你确实在这里，确实在做一些事，这些都值得被看见。",
@@ -343,6 +385,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 20, roman: "XX", name: "Judgement", chineseName: "审判", frenchName: "Le Jugement",
     image: "/cards/20-judgement.png",
+    webpImage: "/cards-webp/20-judgement.webp",
+    thumbnail: "/cards-thumb/20-judgement.webp",
     keywords: ["觉醒", "回顾", "选择", "释放", "向前"],
     coreMeaning: "审判牌中天使吹响了号角，地面上的人从沉睡中起身。这不是宗教中的审判，而是一种内在的觉醒：你开始重新审视自己的路——哪些是真正属于你的，哪些是别人替你选择的。当你愿意诚实地回顾过去，你就已经开始为下一个阶段做准备了。",
     upright: "审判提醒你进行一次自我清理。过去一年的经历里，哪些让你自豪？哪些让你遗憾？重要的不是给自己打分，而是放下那些已经不需要再背着的内疚和悔恨。你不需要对自己那么严厉——你已经比当时更了解自己了。原谅过去的自己，也原谅那些让你失望的人。不是因为软弱，而是因为紧抓着不放只会让你更累。",
@@ -359,6 +403,8 @@ export const tarotCards: TarotCard[] = [
   {
     id: 21, roman: "XXI", name: "The World", chineseName: "世界", frenchName: "Le Monde",
     image: "/cards/21-world.png",
+    webpImage: "/cards-webp/21-world.webp",
+    thumbnail: "/cards-thumb/21-world.webp",
     keywords: ["完成", "圆满", "整合", "感恩", "新循环"],
     coreMeaning: "世界牌里一位舞者在桂冠中旋转，四个角落分别是天使、鹰、狮子和公牛。它标志着一个周期的完成——一件你投入了很久的事、一段走了很远的路，现在到达了一个可以停下来的地方。这个结束，也是下一个开始的起点。",
     upright: "世界牌在说：你做到了。不是别人定义的伟大，而是你自己知道——你在一件事情上走了完整的一圈。你可能学完了一门课程、结束了一段重要的关系、走出了一个反复挣扎的阶段。停下来看看自己走过来的路，有些地方曾经觉得过不去，现在你已经在它前面了。你值得为自己的完成感到欣慰。",
