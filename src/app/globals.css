@@ -1,112 +1,197 @@
 @import "tailwindcss";
 
 /* ==============================
-   ROYAL ARCANA — Design System
+   ROYAL ARCANA — Ballroom Salon Design System
    ============================== */
 
 @theme inline {
-  /* Primary Palette */
-  --color-gold: #C8A96B;
-  --color-gold-light: #D4B978;
-  --color-gold-dark: #A88950;
-  --color-gold-dim: #8B7040;
+  /* Backgrounds */
+  --color-cream-bg: #F7F0E6;
+  --color-ivory-panel: #FFF9EF;
+  --color-soft-ivory: #FBF4EA;
 
-  --color-ivory: #F4E7CF;
-  --color-ivory-light: #FAF0E0;
-  --color-ivory-dark: #E0D0B0;
-  --color-parchment: #D4C4A8;
+  /* Gold / champagne */
+  --color-champagne: #C7A56F;
+  --color-soft-gold: #D9C39A;
+  --color-deep-gold: #A8844F;
 
-  --color-royal: #1F2F46;
-  --color-royal-light: #2A3D5C;
-  --color-royal-dark: #152030;
-  --color-midnight: #0D1424;
-  --color-navy: #16233A;
+  /* Text */
+  --color-warm-brown: #6F5A3E;
+  --color-text-main: #4A3A2A;
+  --color-text-muted: #8A7760;
 
-  --color-burgundy: #6D1F2A;
-  --color-burgundy-light: #8B2835;
-  --color-burgundy-dark: #4A1820;
-
-  --color-emerald: #2E5B4F;
-  --color-emerald-light: #3A7060;
-
-  --color-silver: #B8BCC6;
-  --color-silver-light: #CDD0D8;
+  /* Accent colors */
+  --color-powder-blue: #C9D8E8;
+  --color-pale-blue: #DDE8EF;
+  --color-sage: #C8D2BD;
+  --color-blush: #E9D2CB;
+  --color-rose-soft: #F0DCD6;
 
   /* Typography */
   --font-cinzel: "Cinzel", serif;
   --font-cormorant: "Cormorant Garamond", serif;
   --font-eb-garamond: "EB Garamond", serif;
-  --font-trajan: "Cinzel", serif;
-
-  /* Animation */
-  --ease-royal: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-ceremonial: cubic-bezier(0.4, 0, 0.1, 1);
 }
 
-/* Base Styles */
 body {
-  background: var(--color-midnight);
-  color: var(--color-ivory);
+  background: var(--color-cream-bg);
+  color: var(--color-text-main);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--color-midnight); }
-::-webkit-scrollbar-thumb { background: var(--color-gold-dim); border-radius: 2px; }
+::-webkit-scrollbar-track { background: var(--color-soft-ivory); }
+::-webkit-scrollbar-thumb { background: rgba(199, 165, 111, 0.3); border-radius: 2px; }
 
-/* Textures */
+/* ==============================
+   BALLROOM ATMOSPHERE (used by BallroomBackground)
+   ============================== */
+.ballroom-base {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 249, 239, 0.9), transparent 40%),
+    radial-gradient(circle at 15% 20%, rgba(201, 216, 232, 0.35), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(233, 210, 203, 0.30), transparent 26%),
+    linear-gradient(175deg, #F7F0E6 0%, #FBF4EA 40%, #F2EBDE 100%);
+}
+
+.ballroom-chandelier {
+  background: radial-gradient(ellipse at 50% 0%, rgba(217, 195, 154, 0.28) 0%, rgba(217, 195, 154, 0.08) 40%, transparent 65%);
+}
+
+/* ==============================
+   UTILITY CLASSES
+   ============================== */
+
+/* Soft stars */
 .bg-stars {
   background-image:
-    radial-gradient(1px 1px at 10% 20%, rgba(200, 169, 107, 0.3), transparent),
-    radial-gradient(1px 1px at 30% 60%, rgba(200, 169, 107, 0.2), transparent),
-    radial-gradient(1.5px 1.5px at 50% 10%, rgba(200, 169, 107, 0.4), transparent),
-    radial-gradient(1px 1px at 70% 40%, rgba(200, 169, 107, 0.25), transparent),
-    radial-gradient(1px 1px at 90% 80%, rgba(200, 169, 107, 0.2), transparent),
-    radial-gradient(1.5px 1.5px at 20% 85%, rgba(200, 169, 107, 0.3), transparent),
-    radial-gradient(1px 1px at 60% 75%, rgba(200, 169, 107, 0.15), transparent),
-    radial-gradient(1px 1px at 85% 15%, rgba(200, 169, 107, 0.35), transparent),
-    radial-gradient(1px 1px at 15% 45%, rgba(200, 169, 107, 0.2), transparent),
-    radial-gradient(1.5px 1.5px at 40% 35%, rgba(200, 169, 107, 0.3), transparent);
+    radial-gradient(0.5px 0.5px at 10% 22%, rgba(199, 165, 111, 0.20), transparent),
+    radial-gradient(0.6px 0.6px at 30% 58%, rgba(199, 165, 111, 0.14), transparent),
+    radial-gradient(0.7px 0.7px at 52% 12%, rgba(199, 165, 111, 0.18), transparent),
+    radial-gradient(0.5px 0.5px at 72% 42%, rgba(199, 165, 111, 0.15), transparent),
+    radial-gradient(0.6px 0.6px at 88% 78%, rgba(199, 165, 111, 0.12), transparent),
+    radial-gradient(0.7px 0.7px at 22% 82%, rgba(199, 165, 111, 0.16), transparent),
+    radial-gradient(0.5px 0.5px at 62% 72%, rgba(199, 165, 111, 0.10), transparent),
+    radial-gradient(0.6px 0.6px at 84% 16%, rgba(199, 165, 111, 0.14), transparent);
 }
 
-/* Candle glow */
-.candle-glow {
-  background: radial-gradient(
-    ellipse at 50% 30%,
-    rgba(201, 161, 91, 0.08) 0%,
-    rgba(201, 161, 91, 0.04) 30%,
-    transparent 60%
-  );
+/* Panel — ivory base with champagne border */
+.panel-base {
+  border-radius: 32px;
+  border: 1px solid rgba(199, 165, 111, 0.30);
+  background: rgba(255, 249, 239, 0.82);
+  box-shadow: 0 24px 70px rgba(111, 90, 62, 0.13);
 }
 
-/* Ornamental border */
-.ornament-border {
-  border: 1px solid rgba(200, 169, 107, 0.2);
-  box-shadow:
-    inset 0 0 0 1px rgba(200, 169, 107, 0.08),
-    0 0 60px rgba(0, 0, 0, 0.3);
+/* Panel — selected state */
+.panel-selected {
+  border: 1px solid rgba(199, 165, 111, 0.70);
+  background: rgba(251, 244, 234, 0.94);
+  box-shadow: 0 28px 80px rgba(199, 165, 111, 0.20);
 }
 
-/* Gold text gradient */
-.text-gold-gradient {
-  background: linear-gradient(
-    180deg,
-    #D4B978 0%,
-    #C8A96B 30%,
-    #A88950 70%,
-    #8B7040 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Keyword tag */
+.tag-soft {
+  border-radius: 9999px;
+  border: 1px solid rgba(199, 165, 111, 0.28);
+  background: rgba(251, 244, 234, 0.78);
+  padding: 0.15rem 0.75rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
 }
 
-/* Card shadow for floating tarot */
-.card-glow {
-  box-shadow:
-    0 0 30px rgba(200, 169, 107, 0.15),
-    0 0 60px rgba(200, 169, 107, 0.08),
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(200, 169, 107, 0.15);
+/* Gold divider line */
+.divider-gold {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(199, 165, 111, 0.40), transparent);
+}
+
+/* Section title */
+.section-title {
+  font-family: var(--font-cinzel);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  color: var(--color-champagne);
+  text-transform: uppercase;
+}
+
+/* ==============================
+   DYNAMIC BALLROOM KEYFRAMES (refined)
+   ============================== */
+@keyframes ballroomDrift {
+  0%   { transform: scale(1.03) translate3d(0px, 0px, 0); }
+  25%  { transform: scale(1.06) translate3d(-14px, -6px, 0); }
+  50%  { transform: scale(1.08) translate3d(-8px, -12px, 0); }
+  75%  { transform: scale(1.05) translate3d(8px, -3px, 0); }
+  100% { transform: scale(1.03) translate3d(0px, 0px, 0); }
+}
+@keyframes ballroomCrossfade {
+  0%, 35%  { opacity: 0; }
+  48%, 78% { opacity: 0.45; }
+  100%     { opacity: 0; }
+}
+@keyframes ballroomLightBreath {
+  0%, 100% { opacity: 0.38; }
+  35%      { opacity: 0.55; }
+  65%      { opacity: 0.46; }
+}
+@keyframes ballroomDust {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0.14; }
+  33%  { transform: translate3d(10px, -16px, 0); opacity: 0.22; }
+  66%  { transform: translate3d(-6px, -8px, 0); opacity: 0.18; }
+  100% { transform: translate3d(0, 0, 0); opacity: 0.14; }
+}
+@keyframes ballroomShimmer {
+  0%, 100% { opacity: 0.12; transform: translateY(0); }
+  50%      { opacity: 0.22; transform: translateY(-4px); }
+}
+
+/* Slower, more organic timing */
+.animate-ballroom-drift       { animation: ballroomDrift 55s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.animate-ballroom-crossfade   { animation: ballroomCrossfade 28s ease-in-out infinite; }
+.animate-ballroom-light-breath{ animation: ballroomLightBreath 10s ease-in-out infinite; }
+.animate-ballroom-dust        { animation: ballroomDust 32s ease-in-out infinite; }
+.animate-ballroom-shimmer     { animation: ballroomShimmer 12s ease-in-out infinite; }
+
+.ballroom-dust-layer {
+  background-image:
+    radial-gradient(circle, rgba(255,236,190,0.35) 0 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.22) 0 1px, transparent 1px),
+    radial-gradient(circle, rgba(217,195,154,0.28) 0 0.5px, transparent 0.5px);
+  background-size: 140px 140px, 200px 200px, 90px 90px;
+  background-position: 0 0, 30px 20px, 60px 40px;
+  opacity: 0.20;
+}
+
+/* Shimmer overlay — like chandelier crystals catching light */
+.ballroom-shimmer {
+  background:
+    radial-gradient(ellipse at 40% 15%, rgba(255,244,215,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 65% 18%, rgba(255,244,215,0.12) 0%, transparent 40%);
+}
+
+/* ==============================
+   GLASS PANEL — floating on ballroom
+   ============================== */
+.glass-panel {
+  border-radius: 32px;
+  border: 1px solid rgba(199, 165, 111, 0.3);
+  background: rgba(255, 249, 239, 0.62);
+  box-shadow: 0 28px 80px rgba(111, 90, 62, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Card outer frame */
+.card-frame {
+  border-radius: 28px;
+  background: rgba(255, 249, 239, 0.68);
+  padding: 0.75rem;
+  box-shadow: 0 30px 85px rgba(74, 58, 42, 0.18);
+  border: 1px solid rgba(199, 165, 111, 0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
