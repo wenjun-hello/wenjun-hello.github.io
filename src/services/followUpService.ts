@@ -18,6 +18,7 @@
 import type { TarotCard } from "@/data/tarotCards";
 import type { QuestionType } from "@/lib/tarot";
 import { generateFollowUpInterpretation } from "@/lib/generateFollowUpInterpretation";
+import { canUseAI, incrementAIUsage } from "@/lib/usageLimit";
 
 export type FollowUpInput = {
   card: TarotCard;
@@ -49,9 +50,21 @@ export async function generateFollowUpResponse(
   const useAI = process.env.NEXT_PUBLIC_USE_AI_FOLLOW_UP === "true";
 
   if (useAI) {
-    // Determine the backend URL:
-    //   1. NEXT_PUBLIC_FOLLOW_UP_API_URL (external, for GitHub Pages)
-    //   2. /api/follow-up (same-origin, for Vercel/Next.js hosting)
+    // Check daily usage limit
+    if (!canUseAI()) {
+      // Limit reached — fall back to local without calling backend
+      const fallback = generateFollowUpInterpretation({
+        card: input.card,
+        questionType: input.questionType,
+        followUpQuestion: input.followUpQuestion,
+      });
+      return {
+        answer: fallback,
+        source: "local",
+        error: "daily-limit-reached",
+      };
+    }
+
     const apiUrl =
       process.env.NEXT_PUBLIC_FOLLOW_UP_API_URL || "/api/follow-up";
 
@@ -83,9 +96,12 @@ export async function generateFollowUpResponse(
 
       if (!data.answer) throw new Error("Backend response missing answer");
 
+      // Only increment on successful AI response
+      incrementAIUsage();
+
       return { answer: data.answer, source: "ai" };
     } catch {
-      // Backend unavailable — fall back to local
+      // Backend unavailable — fall back to local (don't increment)
       const fallback = generateFollowUpInterpretation({
         card: input.card,
         questionType: input.questionType,

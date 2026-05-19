@@ -6,6 +6,7 @@ import type { TarotCard } from "@/data/tarotCards";
 import type { QuestionType } from "@/lib/tarot";
 import { getSuggestedQuestions } from "@/lib/generateFollowUpInterpretation";
 import { generateFollowUpResponse, type FollowUpResponse } from "@/services/followUpService";
+import { getRemainingAI, canUseAI } from "@/lib/usageLimit";
 
 type Props = {
   card: TarotCard;
@@ -18,6 +19,8 @@ export default function FollowUpInterpretation({ card, questionType }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(!canUseAI());
+  const [remaining, setRemaining] = useState(getRemainingAI());
 
   const suggestions = getSuggestedQuestions(questionType);
 
@@ -36,6 +39,15 @@ export default function FollowUpInterpretation({ card, questionType }: Props) {
       questionType,
       followUpQuestion: q,
     });
+
+    // Update usage state
+    if (response.source === "ai") {
+      setRemaining(getRemainingAI());
+    }
+    if (response.error === "daily-limit-reached") {
+      setLimitReached(true);
+      setRemaining(0);
+    }
 
     setHistory((prev) => [{ question: q, answer: response.answer, source: response.source }, ...prev].slice(0, 3));
     setInput("");
@@ -103,15 +115,31 @@ export default function FollowUpInterpretation({ card, questionType }: Props) {
         })}
       </div>
 
+      {/* Limit reached message */}
+      {limitReached && (
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="text-center mb-4 p-4 rounded-2xl"
+          style={{
+            background: "rgba(255,249,239,0.5)",
+            border: "1px solid rgba(199,165,111,0.18)",
+          }}
+        >
+          <p className="text-[0.72rem] leading-6 italic" style={{ fontFamily: "Cormorant Garamond, serif", color: "#8A7760" }}>
+            今天的 AI 追问次数已经用完啦。你可以先回到牌面本身，看看这张牌还想提醒你什么。
+          </p>
+        </motion.div>
+      )}
+
       {/* Input + button */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <input
           type="text"
           value={input}
           onChange={(e) => { setInput(e.target.value); setError(""); setSelectedChip(null); }}
-          onKeyDown={(e) => { if (e.key === "Enter" && !loading) handleGenerate(); }}
-          placeholder="写下你想继续追问的问题……"
-          disabled={loading}
+          onKeyDown={(e) => { if (e.key === "Enter" && !loading && !limitReached) handleGenerate(); }}
+          placeholder={limitReached ? "今日 AI 追问次数已用完" : "写下你想继续追问的问题……"}
+          disabled={loading || limitReached}
           className="flex-1 text-sm px-4 py-2.5 rounded-2xl transition-all duration-300 focus:outline-none disabled:opacity-50"
           style={{
             border: "1px solid rgba(199,165,111,0.28)",
@@ -122,20 +150,27 @@ export default function FollowUpInterpretation({ card, questionType }: Props) {
         />
         <button
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || limitReached}
           className="text-[0.7rem] px-5 py-2.5 rounded-full transition-all duration-300 whitespace-nowrap disabled:opacity-60"
           style={{
             border: "1px solid rgba(199,165,111,0.45)",
-            background: "#C7A56F",
+            background: limitReached ? "rgba(199,165,111,0.3)" : "#C7A56F",
             color: "#FFF9EF",
             fontFamily: "Cinzel, serif",
             letterSpacing: "0.12em",
-            boxShadow: "0 8px 24px rgba(111,90,62,0.12)",
+            boxShadow: limitReached ? "none" : "0 8px 24px rgba(111,90,62,0.12)",
           }}
         >
-          {loading ? "正在整理……" : "继续解读"}
+          {limitReached ? "今日次数已用完" : loading ? "正在整理……" : "继续解读"}
         </button>
       </div>
+
+      {/* Remaining count */}
+      {!limitReached && (
+        <p className="text-center text-[0.6rem] tracking-[0.05em] mb-3" style={{ fontFamily: "Cormorant Garamond, serif", color: "rgba(138,119,96,0.45)", fontStyle: "italic" }}>
+          今日 AI 追问剩余：{remaining} 次
+        </p>
+      )}
 
       {error && (
         <p className="text-[0.65rem] text-center mb-3 italic" style={{ color: "#C7A56F", fontFamily: "Cormorant Garamond, serif" }}>
