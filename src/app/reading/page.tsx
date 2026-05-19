@@ -6,6 +6,7 @@ import DynamicBallroomBackground from "@/components/DynamicBallroomBackground";
 import { useHandGesture } from "@/hooks/useHandGesture";
 import CameraHandOverlay from "@/components/gesture/CameraHandOverlay";
 import GestureFanDeck from "@/components/reading/GestureFanDeck";
+import FollowUpInterpretation from "@/components/reading/FollowUpInterpretation";
 import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
 import TarotCard from "@/components/TarotCard";
@@ -216,6 +217,9 @@ function ReadingResult({
           </motion.div>
         );
       })}
+
+      {/* Follow-up interpretation */}
+      <FollowUpInterpretation card={cards[0]} questionType={questionType} />
 
       {/* Synthesis for 3-card */}
       {spreadType === "three" && cards.length >= 3 && (
