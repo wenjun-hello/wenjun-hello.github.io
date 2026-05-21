@@ -27,7 +27,20 @@ export type FollowUpInput = {
   followUpQuestion: string;
   readingContext?: {
     allCards?: TarotCard[];
-    spreadType?: "one" | "three";
+    spreadType?: string;
+    originalQuestion?: string;
+    cards?: Array<{
+      chineseName?: string;
+      name?: string;
+      keywords?: string[];
+      position?: string;
+      orientation?: string;
+    }>;
+    followUpHistory?: Array<{
+      question: string;
+      answer: string;
+      source?: string;
+    }>;
   };
 };
 
@@ -69,6 +82,13 @@ export async function generateFollowUpResponse(
       process.env.NEXT_PUBLIC_FOLLOW_UP_API_URL || "/api/follow-up";
 
     try {
+      console.log("Follow-up request payload:", {
+        cardName: input.card.name,
+        questionType: input.questionType,
+        followUpQuestion: input.followUpQuestion,
+        readingContext: input.readingContext,
+      });
+
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,7 +106,10 @@ export async function generateFollowUpResponse(
           questionType: input.questionType,
           spreadPosition: input.spreadPosition,
           followUpQuestion: input.followUpQuestion,
-          readingContext: input.readingContext,
+          readingContext: {
+            ...input.readingContext,
+            originalQuestion: input.readingContext?.originalQuestion || "",
+          },
         }),
       });
 

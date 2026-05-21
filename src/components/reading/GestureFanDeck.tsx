@@ -10,11 +10,12 @@ import type { GestureState } from "@/hooks/useHandGesture";
 
 type Props = {
   count: 1 | 3;
-  onReveal: (cards: TarotCardType[]) => void;
+  onReveal: (cards: CardWithOrientation[]) => void;
   handGesture: GestureState;
   isGestureEnabled: boolean;
 };
 
+export type CardWithOrientation = TarotCardType & { orientation: "upright" | "reversed"; isReversed: boolean };
 type DeckState = "stacked" | "shuffling" | "spread" | "navigating" | "selected" | "revealing" | "revealed";
 
 const FAN_SIZE = 9;
@@ -23,7 +24,7 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
   const [deckState, setDeckState] = useState<DeckState>("stacked");
   const [fanCards, setFanCards] = useState<TarotCardType[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(Math.floor(FAN_SIZE / 2));
-  const [selectedCards, setSelectedCards] = useState<TarotCardType[]>([]);
+  const [selectedCards, setSelectedCards] = useState<CardWithOrientation[]>([]);
   const [selectedIdxs, setSelectedIdxs] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
 
@@ -43,7 +44,11 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
   const doSelect = useCallback(() => {
     if (deckState !== "spread" && deckState !== "navigating") return;
     if (selectedIdxs.includes(highlightIdx)) return;
-    const card = fanCards[highlightIdx];
+    const base = fanCards[highlightIdx];
+    const isReversed = Math.random() < 0.3;
+    const orientation = isReversed ? "reversed" as const : "upright" as const;
+    const card: CardWithOrientation = { ...base, orientation, isReversed };
+    console.log("Selected card:", card.name, "| orientation:", orientation, "| isReversed:", isReversed);
     const newSelected = [...selectedCards, card];
     const newIdxs = [...selectedIdxs, highlightIdx];
     setSelectedCards(newSelected);
@@ -60,7 +65,7 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
     setRevealed(true);
     setTimeout(() => {
       setDeckState("revealed");
-      onReveal(selectedCards.length > 0 ? selectedCards : [fanCards[highlightIdx]]);
+      onReveal(selectedCards.length > 0 ? selectedCards : [{ ...fanCards[highlightIdx], orientation: "upright" as const, isReversed: false }]);
     }, 900);
   }, [deckState, revealed, selectedCards, fanCards, highlightIdx, onReveal]);
 
@@ -188,7 +193,7 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
       {(deckState === "spread" || deckState === "navigating" || deckState === "selected") && (
         <div className="flex flex-col items-center gap-5">
           {/* Fan */}
-          <div className="relative w-full max-w-[640px] h-[300px] sm:h-[360px] mx-auto">
+          <div className="relative w-full max-w-[640px] h-[300px] sm:h-[360px] mx-auto" style={{ animation: "fanSway 6s ease-in-out infinite" }}>
             {fanCards.map((card, i) => {
               const s = getCardStyle(i);
               const isHL = i === highlightIdx && (deckState === "spread" || deckState === "navigating");

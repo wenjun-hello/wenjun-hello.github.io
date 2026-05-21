@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { TarotCard } from "@/data/tarotCards";
+import type { CardWithOrientation } from "@/components/reading/GestureFanDeck";
 import type { QuestionType } from "@/lib/tarot";
 import { getSuggestedQuestions } from "@/lib/generateFollowUpInterpretation";
 import { generateFollowUpResponse, type FollowUpResponse } from "@/services/followUpService";
@@ -11,9 +12,13 @@ import { getRemainingAI, canUseAI } from "@/lib/usageLimit";
 type Props = {
   card: TarotCard;
   questionType?: QuestionType;
+  originalQuestion?: string;
+  spreadType?: string;
+  allCards?: CardWithOrientation[];
+  positions?: string[];
 };
 
-export default function FollowUpInterpretation({ card, questionType }: Props) {
+export default function FollowUpInterpretation({ card, questionType, originalQuestion, spreadType, allCards, positions }: Props) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<{ question: string; answer: string; source: string }[]>([]);
   const [error, setError] = useState("");
@@ -34,10 +39,19 @@ export default function FollowUpInterpretation({ card, questionType }: Props) {
     setLoading(true);
     setSelectedChip(null);
 
+    const cardSummaries = (allCards || [card]).map((c: any, i) => ({
+      chineseName: c.chineseName, name: c.name, keywords: c.keywords,
+      position: positions?.[i] || (allCards && allCards.length > 1 ? `第${i + 1}张牌` : undefined),
+      orientation: c.orientation || "upright",
+      isReversed: c.isReversed || false,
+    }));
     const response: FollowUpResponse = await generateFollowUpResponse({
-      card,
-      questionType,
-      followUpQuestion: q,
+      card, questionType, followUpQuestion: q,
+      readingContext: {
+        originalQuestion, spreadType,
+        cards: cardSummaries,
+        followUpHistory: history.slice(0, 3).map((h) => ({ question: h.question, answer: h.answer, source: h.source })),
+      },
     });
 
     // Update usage state

@@ -7,10 +7,11 @@ import { useHandGesture } from "@/hooks/useHandGesture";
 import CameraHandOverlay from "@/components/gesture/CameraHandOverlay";
 import GestureFanDeck from "@/components/reading/GestureFanDeck";
 import FollowUpInterpretation from "@/components/reading/FollowUpInterpretation";
+import BallroomMotionLayer from "@/components/reading/BallroomMotionLayer";
 import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
 import TarotCard from "@/components/TarotCard";
-import { TarotCard as TarotCardType } from "@/data/tarotCards";
+import type { CardWithOrientation } from "@/components/reading/GestureFanDeck";
 import {
   questionTypes, getSpreadPositions, getMeaningByQuestionType,
   type QuestionType, type SpreadType,
@@ -148,13 +149,19 @@ function SectionTitle({ children }: { children: string }) {
 }
 
 function ReadingResult({
-  cards, questionType, spreadType, freeQuestion, onReset,
-}: { cards: TarotCardType[]; questionType: QuestionType; spreadType: SpreadType; freeQuestion: string; onReset: () => void }) {
+  cards, questionType, spreadType, freeQuestion, onReset, originalQuestion,
+}: { cards: CardWithOrientation[]; questionType: QuestionType; spreadType: SpreadType; freeQuestion: string; onReset: () => void; originalQuestion: string }) {
   const positions = spreadType === "three" ? getSpreadPositions(questionType) : null;
 
   return (
     <div className="w-full max-w-5xl mx-auto">
       <SectionHeading title="抽牌结果" />
+      {originalQuestion && (
+        <div className="max-w-xl mx-auto mb-8 px-5 py-3 rounded-2xl text-center" style={{ border: "1px solid rgba(199,165,111,0.22)", background: "rgba(255,249,239,0.5)" }}>
+          <p className="text-[0.6rem] tracking-[0.08em] mb-1" style={{ fontFamily: "Cinzel, serif", color: "#C7A56F" }}>你的问题</p>
+          <p className="text-sm italic" style={{ fontFamily: "Cormorant Garamond, serif", color: "#6F5A3E" }}>「{originalQuestion}」</p>
+        </div>
+      )}
 
       {cards.map((card, i) => {
         const meaning = getMeaningByQuestionType(card, questionType);
@@ -176,6 +183,12 @@ function ReadingResult({
               <div className="flex-1 min-w-0 panel-base p-6 sm:p-8">
                 <h2 className="text-xl sm:text-2xl tracking-[0.1em] mb-1" style={{ fontFamily: "Cinzel, serif", color: "#4A3A2A", fontWeight: 600 }}>
                   {card.chineseName}
+                  <span className="ml-3 text-sm tracking-[0.1em] px-2 py-0.5 rounded-full" style={{
+                    background: card.isReversed ? "rgba(180,120,100,0.12)" : "rgba(199,165,111,0.12)",
+                    color: card.isReversed ? "#B06050" : "#C7A56F",
+                    border: card.isReversed ? "1px solid rgba(180,120,100,0.3)" : "1px solid rgba(199,165,111,0.3)",
+                    fontFamily: "Cinzel, serif", fontWeight: 400,
+                  }}>{card.isReversed ? "逆位" : "正位"}</span>
                 </h2>
                 <p className="text-xs italic tracking-[0.08em] mb-4" style={{ fontFamily: "Cormorant Garamond, serif", color: "#8A7760" }}>
                   {card.name} · {card.frenchName}
@@ -196,7 +209,7 @@ function ReadingResult({
                 <div className="divider-gold my-4" />
 
                 <SectionTitle>牌面提醒</SectionTitle>
-                <p className="text-sm leading-8" style={{ fontFamily: "EB Garamond, serif", color: "#6F5A3E" }}>{meaning}</p>
+                <p className="text-sm leading-8" style={{ fontFamily: "EB Garamond, serif", color: "#6F5A3E" }}>{card.isReversed ? card.reversed : meaning}</p>
 
                 <div className="divider-gold my-4" />
 
@@ -219,7 +232,7 @@ function ReadingResult({
       })}
 
       {/* Follow-up interpretation */}
-      <FollowUpInterpretation card={cards[0]} questionType={questionType} />
+      <FollowUpInterpretation card={cards[0]} questionType={questionType} originalQuestion={originalQuestion} spreadType={spreadType} allCards={cards} positions={positions || undefined} />
 
       {/* Synthesis for 3-card */}
       {spreadType === "three" && cards.length >= 3 && (
@@ -256,7 +269,8 @@ export default function ReadingPage() {
   const [freeQuestion, setFreeQuestion] = useState("");
   const [spreadType, setSpreadType] = useState<SpreadType | null>(null);
   const [error, setError] = useState("");
-  const [drawnCards, setDrawnCards] = useState<TarotCardType[]>([]);
+  const [drawnCards, setDrawnCards] = useState<CardWithOrientation[]>([]);
+  const [originalQuestion, setOriginalQuestion] = useState("");
   // Atmosphere state — connected to gestures
   const [bgPaused, setBgPaused] = useState(false);
   const [bgIntensity, setBgIntensity] = useState<"soft" | "medium" | "strong">("strong");
@@ -274,11 +288,11 @@ export default function ReadingPage() {
   };
 
   const handleReset = () => {
-    setStep("question"); setQuestionType(null); setFreeQuestion(""); setSpreadType(null); setError(""); setDrawnCards([]);
+    setStep("question"); setQuestionType(null); setFreeQuestion(""); setSpreadType(null); setError(""); setDrawnCards([]); setOriginalQuestion("");
     setBgPaused(false); setBgIntensity("strong");
   };
 
-  const handleReveal = (cards: TarotCardType[]) => { setDrawnCards(cards); setBgPaused(true); setBgIntensity("soft"); setStep("result"); };
+  const handleReveal = (cards: CardWithOrientation[]) => { setDrawnCards(cards); setBgPaused(true); setBgIntensity("soft"); setStep("result"); };
 
   return (
     <>
@@ -291,6 +305,9 @@ export default function ReadingPage() {
       <div className="transition-opacity duration-[2s]" style={{ opacity: step === "result" ? 1 : 0 }}>
         <DynamicBallroomBackground primaryImage="/design-assets/ballroom-night.png" mode="night" intensity="soft" isPaused={false} />
       </div>
+
+      {/* Ballroom motion layers — breathing, haze, dancers, dance floor */}
+      <BallroomMotionLayer />
 
       {/* Camera hand gesture overlay */}
       <CameraHandOverlay
@@ -351,10 +368,30 @@ export default function ReadingPage() {
             )}
             {step === "result" && (
               <motion.div key="rv" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                <ReadingResult cards={drawnCards} questionType={questionType!} spreadType={spreadType!} freeQuestion={freeQuestion} onReset={handleReset} />
+                <ReadingResult cards={drawnCards} questionType={questionType!} spreadType={spreadType!} freeQuestion={freeQuestion} onReset={handleReset} originalQuestion={originalQuestion} />
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Original question input */}
+          {step === "question" && questionType && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-xl mx-auto mt-6">
+              <div className="p-5 rounded-2xl" style={{ border: "1px solid rgba(199,165,111,0.28)", background: "rgba(255,249,239,0.6)" }}>
+                <h3 className="text-center text-xs tracking-[0.12em] mb-1" style={{ fontFamily: "Cinzel, serif", color: "#C7A56F" }}>你想问什么？</h3>
+                <p className="text-center text-[0.65rem] mb-3 italic" style={{ fontFamily: "Cormorant Garamond, serif", color: "#8A7760" }}>可以写下一句话，也可以只在心里默念。如果写下来，会在解读时参考你的问题。</p>
+                <div className="flex flex-wrap justify-center gap-1.5 mb-3">
+                  {(questionType === "love" ? ["我现在是否应该主动靠近？","这段关系真正的问题是什么？","我该继续等待吗？"] : questionType === "career" ? ["这个机会适合我吗？","我下一步应该怎么做？","我现在最需要注意什么？"] : ["我最近为什么会这样？","我现在最需要看见什么？","我该如何让自己稳定下来？"]).map((chip) => (
+                    <button key={chip} onClick={() => setOriginalQuestion(chip)} className="text-[0.65rem] px-2.5 py-1 rounded-full transition-all duration-300"
+                      style={{ border: "1px solid rgba(199,165,111,0.28)", background: "rgba(255,249,239,0.6)", color: "#6F5A3E", fontFamily: "Cormorant Garamond, serif" }}>{chip}</button>
+                  ))}
+                </div>
+                <input type="text" value={originalQuestion} onChange={(e) => setOriginalQuestion(e.target.value)}
+                  placeholder={questionType === "love" ? "例如：我现在是否应该主动联系他？" : questionType === "career" ? "例如：这份实习机会适合我吗？" : "例如：我最近为什么总是感到不安？"}
+                  className="w-full text-sm px-4 py-2.5 rounded-2xl transition-all duration-300 focus:outline-none"
+                  style={{ border: "1px solid rgba(199,165,111,0.28)", background: "rgba(255,249,239,0.75)", color: "#4A3A2A", fontFamily: "Cormorant Garamond, serif" }} />
+              </div>
+            </motion.div>
+          )}
 
           {(step === "question" || step === "spread") && (
             <div className="flex flex-col items-center gap-3 mt-10">
