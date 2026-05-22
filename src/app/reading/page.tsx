@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import DynamicBallroomBackground from "@/components/DynamicBallroomBackground";
@@ -8,6 +8,7 @@ import CameraHandOverlay from "@/components/gesture/CameraHandOverlay";
 import GestureFanDeck from "@/components/reading/GestureFanDeck";
 import FollowUpInterpretation from "@/components/reading/FollowUpInterpretation";
 import BallroomMotionLayer from "@/components/reading/BallroomMotionLayer";
+import { pageview, trackEvent } from "@/lib/analytics";
 import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
 import TarotCard from "@/components/TarotCard";
@@ -278,6 +279,9 @@ export default function ReadingPage() {
   // Hand gesture hook
   const handGesture = useHandGesture();
 
+  // Pageview
+  useEffect(() => { pageview("/reading"); }, []);
+
   const canProceed = questionType && spreadType;
 
   const handleNext = () => {
@@ -319,7 +323,7 @@ export default function ReadingPage() {
         isEnabled={handGesture.isEnabled}
         isLoading={handGesture.isLoading}
         error={handGesture.error}
-        onEnable={handGesture.enable}
+        onEnable={() => { handGesture.enable(); trackEvent("gesture_mode_enabled"); }}
         onDisable={handGesture.disable}
         cooldown={handGesture.cooldown}
         hoveredCardIndex={null}
@@ -348,12 +352,12 @@ export default function ReadingPage() {
           <AnimatePresence mode="wait">
             {step === "question" && (
               <motion.div key="q" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4 }}>
-                <QuestionSelector selected={questionType} onSelect={setQuestionType} freeQuestion={freeQuestion} onFreeQuestionChange={setFreeQuestion} />
+                <QuestionSelector selected={questionType} onSelect={(qt) => { setQuestionType(qt); trackEvent("question_type_selected", { question_type: qt }); }} freeQuestion={freeQuestion} onFreeQuestionChange={setFreeQuestion} />
               </motion.div>
             )}
             {step === "spread" && (
               <motion.div key="sp" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4 }}>
-                <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+                <SpreadSelector selected={spreadType} onSelect={(st) => { setSpreadType(st); trackEvent("spread_selected", { spread_type: st }); }} />
               </motion.div>
             )}
             {step === "shuffle" && (
@@ -381,7 +385,7 @@ export default function ReadingPage() {
                 <p className="text-center text-[0.65rem] mb-3 italic" style={{ fontFamily: "Cormorant Garamond, serif", color: "#8A7760" }}>可以写下一句话，也可以只在心里默念。如果写下来，会在解读时参考你的问题。</p>
                 <div className="flex flex-wrap justify-center gap-1.5 mb-3">
                   {(questionType === "love" ? ["我现在是否应该主动靠近？","这段关系真正的问题是什么？","我该继续等待吗？"] : questionType === "career" ? ["这个机会适合我吗？","我下一步应该怎么做？","我现在最需要注意什么？"] : ["我最近为什么会这样？","我现在最需要看见什么？","我该如何让自己稳定下来？"]).map((chip) => (
-                    <button key={chip} onClick={() => setOriginalQuestion(chip)} className="text-[0.65rem] px-2.5 py-1 rounded-full transition-all duration-300"
+                    <button key={chip} onClick={() => { setOriginalQuestion(chip); if (questionType) trackEvent("original_question_filled", { question_type: questionType, has_original_question: true }); }} className="text-[0.65rem] px-2.5 py-1 rounded-full transition-all duration-300"
                       style={{ border: "1px solid rgba(199,165,111,0.28)", background: "rgba(255,249,239,0.6)", color: "#6F5A3E", fontFamily: "Cormorant Garamond, serif" }}>{chip}</button>
                   ))}
                 </div>

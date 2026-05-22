@@ -6,6 +6,7 @@ import TarotCard from "@/components/TarotCard";
 import RoyalButton from "@/components/RoyalButton";
 import { tarotCards, TarotCard as TarotCardType } from "@/data/tarotCards";
 import { drawSingleCard, drawMultipleCards } from "@/lib/tarot";
+import { trackEvent } from "@/lib/analytics";
 import type { GestureState } from "@/hooks/useHandGesture";
 
 type Props = {
@@ -29,8 +30,9 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
   const [revealed, setRevealed] = useState(false);
 
   // Shuffle: pick random cards and spread
-  const doShuffle = useCallback(() => {
+  const doShuffle = useCallback((method: "gesture" | "button" = "button") => {
     setDeckState("shuffling");
+    trackEvent("shuffle_triggered", { method });
     const drawn = drawMultipleCards(tarotCards, FAN_SIZE);
     setFanCards(drawn);
     setHighlightIdx(Math.floor(FAN_SIZE / 2));
@@ -49,6 +51,7 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
     const orientation = isReversed ? "reversed" as const : "upright" as const;
     const card: CardWithOrientation = { ...base, orientation, isReversed };
     console.log("Selected card:", card.name, "| orientation:", orientation, "| isReversed:", isReversed);
+    trackEvent("card_selected", { card_name: card.name, card_chinese_name: card.chineseName, orientation });
     const newSelected = [...selectedCards, card];
     const newIdxs = [...selectedIdxs, highlightIdx];
     setSelectedCards(newSelected);
@@ -63,6 +66,8 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
     if (deckState !== "selected" || revealed) return;
     setDeckState("revealing");
     setRevealed(true);
+    const toReveal = selectedCards.length > 0 ? selectedCards : [{ ...fanCards[highlightIdx], orientation: "upright" as const, isReversed: false }];
+    toReveal.forEach((c) => trackEvent("card_revealed", { card_name: c.name, card_chinese_name: c.chineseName, orientation: c.orientation }));
     setTimeout(() => {
       setDeckState("revealed");
       onReveal(selectedCards.length > 0 ? selectedCards : [{ ...fanCards[highlightIdx], orientation: "upright" as const, isReversed: false }]);
@@ -96,7 +101,7 @@ export default function GestureFanDeck({ count, onReveal, handGesture, isGesture
   // Connect gesture state to fan deck
   useEffect(() => {
     handGesture.setOnOpenPalm(() => {
-      if (deckState === "stacked") doShuffle();
+      if (deckState === "stacked") doShuffle("gesture");
     });
   }, [handGesture.setOnOpenPalm, deckState, doShuffle]);
 

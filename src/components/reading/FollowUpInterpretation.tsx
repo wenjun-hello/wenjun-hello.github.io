@@ -8,6 +8,7 @@ import type { QuestionType } from "@/lib/tarot";
 import { getSuggestedQuestions } from "@/lib/generateFollowUpInterpretation";
 import { generateFollowUpResponse, type FollowUpResponse } from "@/services/followUpService";
 import { getRemainingAI, canUseAI } from "@/lib/usageLimit";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   card: TarotCard;
@@ -54,13 +55,20 @@ export default function FollowUpInterpretation({ card, questionType, originalQue
       },
     });
 
+    // Track follow-up events
+    trackEvent("followup_submitted", { question_type: questionType, spread_type: spreadType, has_original_question: !!originalQuestion, history_count: history.length });
     // Update usage state
     if (response.source === "ai") {
       setRemaining(getRemainingAI());
+      trackEvent("followup_ai_success", { source: "ai", question_type: questionType, spread_type: spreadType });
     }
     if (response.error === "daily-limit-reached") {
       setLimitReached(true);
       setRemaining(0);
+      trackEvent("followup_limit_reached");
+    }
+    if (response.source === "local" && response.error !== "daily-limit-reached") {
+      trackEvent("followup_local_fallback", { reason: response.error || "backend_unavailable" });
     }
 
     setHistory((prev) => [{ question: q, answer: response.answer, source: response.source }, ...prev].slice(0, 3));
