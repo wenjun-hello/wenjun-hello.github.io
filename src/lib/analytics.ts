@@ -1,4 +1,4 @@
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-GLJT4TEH5N";
 
 type GtagFn = (cmd: "config" | "event", target: string, params?: Record<string, any>) => void;
 

@@ -35,6 +35,7 @@ jobs:
         env:
           NEXT_PUBLIC_USE_AI_FOLLOW_UP: "true"
           NEXT_PUBLIC_FOLLOW_UP_API_URL: "https://tarot-ai-backend.vercel.app/api/follow-up"
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-GLJT4TEH5N"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
