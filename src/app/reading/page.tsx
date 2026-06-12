@@ -13,6 +13,8 @@ import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
 import TarotCard from "@/components/TarotCard";
 import type { CardWithOrientation } from "@/components/reading/GestureFanDeck";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { buildReadingText } from "@/lib/buildReadingText";
 import {
   questionTypes, getSpreadPositions, getMeaningByQuestionType,
   type QuestionType, type SpreadType,
@@ -153,10 +155,64 @@ function ReadingResult({
   cards, questionType, spreadType, freeQuestion, onReset, originalQuestion,
 }: { cards: CardWithOrientation[]; questionType: QuestionType; spreadType: SpreadType; freeQuestion: string; onReset: () => void; originalQuestion: string }) {
   const positions = spreadType === "three" ? getSpreadPositions(questionType) : null;
+  const synth = useSpeechSynthesis();
+  const [readingPlaying, setReadingPlaying] = useState(false);
+
+  // When synth finishes naturally, reset button
+  useEffect(() => {
+    if (!synth.isSpeaking && readingPlaying) {
+      setReadingPlaying(false);
+      trackEvent("result_reading_finished");
+    }
+  }, [synth.isSpeaking, readingPlaying]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { synth.stop(); };
+  }, [synth]);
 
   return (
     <div className="w-full max-w-5xl mx-auto">
       <SectionHeading title="抽牌结果" />
+
+      {/* Read aloud button */}
+      <div className="flex justify-center mb-6">
+        {readingPlaying ? (
+          <button
+            onClick={() => { synth.stop(); trackEvent("result_reading_stopped"); setReadingPlaying(false); }}
+            className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full transition-all duration-300"
+            style={{
+              border: "1px solid rgba(199,165,111,0.35)",
+              background: "rgba(255,249,239,0.65)",
+              color: "#C7A56F",
+              fontFamily: "Cinzel, serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            停止朗读
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              const text = buildReadingText(cards, spreadType);
+              trackEvent("result_reading_started");
+              setReadingPlaying(true);
+              synth.speak(text);
+            }}
+            className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full transition-all duration-300 hover:opacity-70"
+            style={{
+              border: "1px solid rgba(199,165,111,0.28)",
+              background: "rgba(255,249,239,0.55)",
+              color: "#C7A56F",
+              fontFamily: "Cinzel, serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            朗读牌义
+          </button>
+        )}
+      </div>
+
       {originalQuestion && (
         <div className="max-w-xl mx-auto mb-8 px-5 py-3 rounded-2xl text-center" style={{ border: "1px solid rgba(199,165,111,0.22)", background: "rgba(255,249,239,0.5)" }}>
           <p className="text-[0.6rem] tracking-[0.08em] mb-1" style={{ fontFamily: "Cinzel, serif", color: "#C7A56F" }}>你的问题</p>
