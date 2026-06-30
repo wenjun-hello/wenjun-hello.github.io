@@ -8,6 +8,7 @@ import CameraHandOverlay from "@/components/gesture/CameraHandOverlay";
 import GestureFanDeck from "@/components/reading/GestureFanDeck";
 import FollowUpInterpretation from "@/components/reading/FollowUpInterpretation";
 import BallroomMotionLayer from "@/components/reading/BallroomMotionLayer";
+import ArcanaConvoAIRoom from "@/components/reading/ArcanaConvoAIRoom";
 import { pageview, trackEvent } from "@/lib/analytics";
 import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
@@ -157,6 +158,7 @@ function ReadingResult({
   const positions = spreadType === "three" ? getSpreadPositions(questionType) : null;
   const synth = useSpeechSynthesis();
   const [readingPlaying, setReadingPlaying] = useState(false);
+  const [isConvoAIOpen, setIsConvoAIOpen] = useState(false);
 
   // When synth finishes naturally, reset button
   useEffect(() => {
@@ -175,8 +177,8 @@ function ReadingResult({
     <div className="w-full max-w-5xl mx-auto">
       <SectionHeading title="抽牌结果" />
 
-      {/* Read aloud button */}
-      <div className="flex justify-center mb-6">
+      {/* Action buttons: read aloud + voice room */}
+      <div className="flex justify-center gap-3 mb-6">
         {readingPlaying ? (
           <button
             onClick={() => { synth.stop(); trackEvent("result_reading_stopped"); setReadingPlaying(false); }}
@@ -211,6 +213,22 @@ function ReadingResult({
             朗读牌义
           </button>
         )}
+        <button
+          onClick={() => {
+            trackEvent("convoai_room_opened");
+            setIsConvoAIOpen(true);
+          }}
+          className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full transition-all duration-300 hover:opacity-70"
+          style={{
+            border: "1px solid rgba(199,165,111,0.4)",
+            background: "rgba(199,165,111,0.18)",
+            color: "#C7A56F",
+            fontFamily: "Cinzel, serif",
+            letterSpacing: "0.1em",
+          }}
+        >
+          进入语音房
+        </button>
       </div>
 
       {originalQuestion && (
@@ -313,6 +331,16 @@ function ReadingResult({
       <p className="text-center text-[0.6rem] mt-10 tracking-[0.08em] max-w-md mx-auto" style={{ fontFamily: "Cormorant Garamond, serif", color: "#8A7760", fontStyle: "italic" }}>
         塔罗结果只是一种象征性的自我观察工具。它不能替你做决定，也不代表确定的未来。真正重要的，仍然是你的感受、判断和行动。
       </p>
+
+      {/* Agora ConvoAI voice room overlay */}
+      <ArcanaConvoAIRoom
+        isOpen={isConvoAIOpen}
+        onClose={() => setIsConvoAIOpen(false)}
+        cards={cards}
+        questionType={questionType}
+        spreadType={spreadType}
+        originalQuestion={originalQuestion}
+      />
     </div>
   );
 }
