@@ -10,6 +10,8 @@ import FollowUpInterpretation from "@/components/reading/FollowUpInterpretation"
 import BallroomMotionLayer from "@/components/reading/BallroomMotionLayer";
 import ArcanaConvoAIRoom from "@/components/reading/ArcanaConvoAIRoom";
 import { pageview, trackEvent } from "@/lib/analytics";
+import { getOrCreateVoiceDeviceId } from "@/lib/voiceDeviceId";
+import { fetchVoiceUsage, type VoiceUsageResponse } from "@/lib/agoraApi";
 import SectionHeading from "@/components/SectionHeading";
 import RoyalButton from "@/components/RoyalButton";
 import TarotCard from "@/components/TarotCard";
@@ -160,6 +162,80 @@ function ReadingResult({
   const [readingPlaying, setReadingPlaying] = useState(false);
   const [isConvoAIOpen, setIsConvoAIOpen] = useState(false);
 
+  // ── Voice usage ──
+  const [deviceId, setDeviceId] = useState("");
+  const [usageLoading, setUsageLoading] = useState(true);
+  const [usageError, setUsageError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<VoiceUsageResponse | null>(null);
+
+  useEffect(() => {
+    const dId = getOrCreateVoiceDeviceId();
+    setDeviceId(dId);
+    if (!dId) return;
+
+    let cancelled = false;
+    setUsageLoading(true);
+    setUsageError(null);
+
+    fetchVoiceUsage(dId)
+      .then((data) => {
+        if (!cancelled) {
+          setUsage(data);
+          setUsageLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          const code = (err as Error & { code?: string }).code;
+          if (code === "VOICE_LIMIT_SERVICE_UNAVAILABLE") {
+            setUsageError("语音额度服务暂时不可用，请稍后重试。");
+          } else if (err instanceof TypeError && err.message === "Failed to fetch") {
+            setUsageError("网络连接失败，请稍后重试。");
+          } else {
+            setUsageError(err instanceof Error ? err.message : "暂时无法确认语音使用额度，请稍后重试。");
+          }
+          setUsageLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleRefreshUsage = () => {
+    if (!deviceId) return;
+    setUsageLoading(true);
+    setUsageError(null);
+    fetchVoiceUsage(deviceId)
+      .then((data) => {
+        setUsage(data);
+        setUsageLoading(false);
+      })
+      .catch((err) => {
+        const code = (err as Error & { code?: string }).code;
+        if (code === "VOICE_LIMIT_SERVICE_UNAVAILABLE") {
+          setUsageError("语音额度服务暂时不可用，请稍后重试。");
+        } else {
+          setUsageError(err instanceof Error ? err.message : "暂时无法确认语音使用额度，请稍后重试。");
+        }
+        setUsageLoading(false);
+      });
+  };
+
+  const canEnterVoiceRoom =
+    !!deviceId &&
+    !usageLoading &&
+    !usageError &&
+    usage &&
+    usage.remainingSeconds > 0 &&
+    !usage.hasActiveSession;
+
+  function fmtTime(seconds: number): string {
+    const s = Math.max(0, Math.floor(seconds));
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  }
+
   // When synth finishes naturally, reset button
   useEffect(() => {
     if (!synth.isSpeaking && readingPlaying) {
@@ -178,7 +254,7 @@ function ReadingResult({
       <SectionHeading title="抽牌结果" />
 
       {/* Action buttons: read aloud + voice room */}
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="flex justify-center gap-3 mb-6 flex-wrap">
         {readingPlaying ? (
           <button
             onClick={() => { synth.stop(); trackEvent("result_reading_stopped"); setReadingPlaying(false); }}
@@ -213,23 +289,98 @@ function ReadingResult({
             朗读牌义
           </button>
         )}
-        <button
-          onClick={() => {
-            trackEvent("convoai_room_opened");
-            setIsConvoAIOpen(true);
-          }}
-          className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full transition-all duration-300 hover:opacity-70"
+        {usageLoading ? (
+          <span
+            className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full"
+            style={{
+              border: "1px solid rgba(199,165,111,0.2)",
+              background: "rgba(255,249,239,0.3)",
+              color: "rgba(199,165,111,0.5)",
+              fontFamily: "Cormorant Garamond, serif",
+              fontStyle: "italic",
+            }}
+          >
+            正在确认语音额度…
+          </span>
+        ) : usageError ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span
+              className="text-[0.6rem]"
+              style={{
+                color: "rgba(200,100,100,0.7)",
+                fontFamily: "Cormorant Garamond, serif",
+                fontStyle: "italic",
+              }}
+            >
+              {usageError}
+            </span>
+            <button
+              onClick={handleRefreshUsage}
+              className="text-[0.6rem] tracking-[0.08em] px-3 py-1 rounded-full transition-all duration-300 hover:opacity-70"
+              style={{
+                border: "1px solid rgba(199,165,111,0.3)",
+                background: "rgba(199,165,111,0.08)",
+                color: "#C7A56F",
+                fontFamily: "Cinzel, serif",
+              }}
+            >
+              重新查询
+            </button>
+          </div>
+        ) : usage && usage.remainingSeconds <= 0 ? (
+          <span
+            className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full"
+            style={{
+              border: "1px solid rgba(199,165,111,0.2)",
+              background: "rgba(255,249,239,0.3)",
+              color: "rgba(199,165,111,0.45)",
+              fontFamily: "Cormorant Garamond, serif",
+              fontStyle: "italic",
+            }}
+          >
+            今日语音解读时间已用完，明天再来吧。
+          </span>
+        ) : (
+          <button
+            onClick={() => {
+              if (!canEnterVoiceRoom) return;
+              trackEvent("convoai_room_opened");
+              setIsConvoAIOpen(true);
+            }}
+            disabled={!canEnterVoiceRoom}
+            className="text-[0.62rem] tracking-[0.1em] px-4 py-1.5 rounded-full transition-all duration-300 hover:opacity-70 disabled:opacity-40"
+            style={{
+              border: "1px solid rgba(199,165,111,0.4)",
+              background: canEnterVoiceRoom
+                ? "rgba(199,165,111,0.18)"
+                : "rgba(255,249,239,0.15)",
+              color: "#C7A56F",
+              fontFamily: "Cinzel, serif",
+              letterSpacing: "0.1em",
+              cursor: canEnterVoiceRoom ? "pointer" : "not-allowed",
+            }}
+          >
+            进入语音房
+          </button>
+        )}
+      </div>
+
+      {/* Daily usage display */}
+      {usage && !usageError && (
+        <p
+          className="text-center text-[0.6rem] mb-4"
           style={{
-            border: "1px solid rgba(199,165,111,0.4)",
-            background: "rgba(199,165,111,0.18)",
-            color: "#C7A56F",
-            fontFamily: "Cinzel, serif",
-            letterSpacing: "0.1em",
+            fontFamily: "Cormorant Garamond, serif",
+            color:
+              usage.remainingSeconds <= 30
+                ? "rgba(200,100,80,0.7)"
+                : "rgba(199,165,111,0.45)",
+            fontStyle: "italic",
           }}
         >
-          进入语音房
-        </button>
-      </div>
+          今日剩余语音时间：{fmtTime(usage.remainingSeconds)}
+        </p>
+      )}
 
       {originalQuestion && (
         <div className="max-w-xl mx-auto mb-8 px-5 py-3 rounded-2xl text-center" style={{ border: "1px solid rgba(199,165,111,0.22)", background: "rgba(255,249,239,0.5)" }}>
@@ -332,15 +483,22 @@ function ReadingResult({
         塔罗结果只是一种象征性的自我观察工具。它不能替你做决定，也不代表确定的未来。真正重要的，仍然是你的感受、判断和行动。
       </p>
 
-      {/* Agora ConvoAI voice room overlay */}
-      <ArcanaConvoAIRoom
-        isOpen={isConvoAIOpen}
-        onClose={() => setIsConvoAIOpen(false)}
-        cards={cards}
-        questionType={questionType}
-        spreadType={spreadType}
-        originalQuestion={originalQuestion}
-      />
+      {/* Agora ConvoAI voice room overlay — only when deviceId is ready */}
+      {deviceId && (
+        <ArcanaConvoAIRoom
+          isOpen={isConvoAIOpen}
+          onClose={() => {
+            setIsConvoAIOpen(false);
+            if (deviceId) handleRefreshUsage();
+          }}
+          cards={cards}
+          questionType={questionType}
+          spreadType={spreadType}
+          originalQuestion={originalQuestion}
+          deviceId={deviceId}
+          serverRemainingSeconds={usage?.remainingSeconds ?? 0}
+        />
+      )}
     </div>
   );
 }

@@ -49,6 +49,15 @@ interface ConvoAIContentProps {
   readingContext: ReadingContext;
   onTokenWillExpire: (uid: string) => Promise<{ rtcToken: string; rtmToken: string }>;
   onEnd: () => void;
+  sessionTimeLeft: number;
+  dailyTimeLeft: number;
+}
+
+function fmtTime(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
 
 const DEFAULT_AGENT_UID = "123456";
@@ -67,6 +76,8 @@ export default function ConvoAIContent({
   readingContext,
   onTokenWillExpire,
   onEnd,
+  sessionTimeLeft,
+  dailyTimeLeft,
 }: ConvoAIContentProps) {
   const client = useRTCClient();
   const remoteUsers = useRemoteUsers();
@@ -442,6 +453,30 @@ export default function ConvoAIContent({
             {agentStateLabel}
           </span>
 
+          {/* Countdown timers */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <span
+              style={{
+                fontSize: 10,
+                color: sessionTimeLeft <= 30 ? "#e64" : "rgba(199,165,111,0.6)",
+                fontFamily: "monospace",
+              }}
+              title="本次会话剩余"
+            >
+              本次 {fmtTime(sessionTimeLeft)}
+            </span>
+            <span
+              style={{
+                fontSize: 10,
+                color: "rgba(255,249,239,0.35)",
+                fontFamily: "monospace",
+              }}
+              title="今日剩余"
+            >
+              今日 {fmtTime(dailyTimeLeft)}
+            </span>
+          </div>
+
           {/* End button */}
           <button
             onClick={onEnd}
@@ -559,6 +594,36 @@ export default function ConvoAIContent({
               {isMicEnabled ? "麦克风已开启" : "已静音"}
             </span>
           </div>
+
+          {/* End conversation button */}
+          <button
+            onClick={onEnd}
+            style={{
+              marginTop: 24,
+              padding: "10px 32px",
+              fontSize: 14,
+              borderRadius: 40,
+              border: "1px solid rgba(199,165,111,0.35)",
+              background: "rgba(199,165,111,0.1)",
+              color: "#C7A56F",
+              cursor: "pointer",
+              fontFamily: "Cinzel, serif",
+              letterSpacing: "0.1em",
+              transition: "all 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(200,100,80,0.15)";
+              e.currentTarget.style.borderColor = "rgba(200,100,80,0.4)";
+              e.currentTarget.style.color = "#e88";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(199,165,111,0.1)";
+              e.currentTarget.style.borderColor = "rgba(199,165,111,0.35)";
+              e.currentTarget.style.color = "#C7A56F";
+            }}
+          >
+            结束对话
+          </button>
         </div>
 
         {/* Transcript panel */}

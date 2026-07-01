@@ -140,7 +140,12 @@ export default function VoiceAgentContent() {
     // Stop agent
     if (agoraData?.agentId) {
       try {
-        await stopAgent(agoraData.agentId);
+        await stopAgent({
+          deviceId: "voice-agent-test",
+          sessionId: "",
+          agentId: agoraData.agentId,
+          channel: agoraData.channel || "",
+        });
       } catch (err) {
         console.error("Error stopping agent:", err);
       }

@@ -56,6 +56,35 @@ flowchart LR
   E --> F[Agora RTC 播放]
 ```
 
+## 最新更新
+
+### Agora AI 语音房
+
+- 在塔罗结果页中接入实时 AI 语音对话。
+- AI 可结合用户问题、牌阵、牌面方向和已有解读继续交流。
+- 保留实时语音、AI 开场白、远端音频播放和会话结束流程。
+- 使用 Agora 托管能力：
+  - ASR: fengming
+  - LLM: openai_gpt_4o_mini
+  - TTS: minimax_speech_2_8_turbo
+  - Voice: Chinese (Mandarin)_Laid_BackGirl
+
+### 每日语音时长限制
+
+- 每个匿名设备每天累计最多使用 180 秒。
+- 使用 localStorage 生成匿名 deviceId（key: `royal_arcana_device_id`），不包含任何个人信息。
+- 使用 Upstash Redis 在服务端持久化每日使用时长。
+- 支持 usage 查询、invite 会话记录、stop 实际时长结算。
+- 防止重复 stop 重复扣减。
+- 刷新或 Vercel 实例重启后，使用记录不会丢失。
+
+### 稳定性修复
+
+- 修复 invite 请求体被重复 JSON.parse 导致的 500 错误。
+- 恢复并保留原有稳定的 Agora RTC/RTM 语音核心流程。
+- 避免限时功能破坏原有 AI Agent 加入房间和语音对话能力。
+- 不在前端保存任何 Agora、Redis 或模型密钥。
+
 ## 线上地址
 
 https://wenjun-hello.github.io
